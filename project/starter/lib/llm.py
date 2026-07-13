@@ -9,7 +9,7 @@ from lib.messages import (
     UserMessage,
 )
 from lib.tooling import Tool
-
+import os
 
 class LLM:
     def __init__(
@@ -21,7 +21,11 @@ class LLM:
     ):
         self.model = model
         self.temperature = temperature
-        self.client = OpenAI(api_key=api_key) if api_key else OpenAI()
+        base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+        self.client = OpenAI(
+            api_key=api_key or os.getenv("OPENAI_API_KEY"),
+            base_url=base_url
+        )
         self.tools: Dict[str, Tool] = {
             tool.name: tool for tool in (tools or [])
         }
